@@ -31,12 +31,15 @@ class Entry:
     def __repr__(self):
         return self.__str__()
 
-# processes raw data and strips unnecessary information (notes)
-# use 'python read_data format raw_data.csv mood_data.csv' to format data
-def format_data():
-    with open(sys.argv[2], 'rb') as csvfile:
+    def get_activities(self):
+        return self.activities
+
+# processes raw data from 'rawfile' and strips unnecessary information 
+# (notes) and writes the formatted data to 'datafile'
+def format_data(rawfile, datafile):
+    with open(rawfile, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter = ',', quotechar = '|')
-        output = open(sys.argv[3], 'wt')
+        output = open(datafile, 'wt')
         writer = csv.writer(output)
         for row in reader:
             new_row = []
@@ -46,9 +49,9 @@ def format_data():
             writer.writerow(new_row)
 
 # returns a list of Entry objects containing all of the inputted data
-def read_data():
+def read_data(filename):
     data = []
-    with open(sys.argv[2], 'rb') as csvfile:
+    with open(filename, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter = ',', quotechar = '|')
         for row in reader:
             entry = Entry(row[0], row[1], row[2], row[3], row[4])
@@ -76,24 +79,11 @@ def distance(list1, list2):
     dist += len(list2)
     return dist
 
-# distance between any two entries is the percentage of activities that
-# differ (2 days with all same activities have distance 0, and 2 days
-# with none of the same activities have distance 1)
-def dist(list1, list2):
-    dist = 0
-    total = 0
-    for item in list1:
-        if item not in list2:
-            dist +=1
-        else:
-            list2.remove(item)
-        total += 1
 
-    dist += len(list2)
-    return dist/total
-
+# use 'python read_data.py format raw_data.csv mood_data.csv' to format data
 if (sys.argv[1] == "format"):
-    format_data()
+    format_data(sys.argv[2], sys.argv[3])
+# use 'python read_data.py read mood_data.csv' to read data
 elif (sys.argv[1] == "read"):
-    print read_data()
+    print read_data(sys.argv[2])
 
