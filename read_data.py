@@ -49,7 +49,6 @@ def format_data(rawfile, datafile):
             new_row = []
             for i in range(5):
                 new_row.append(row[i])
-            print new_row
             writer.writerow(new_row)
 
 # returns a list of Entry objects containing all of the inputted data
@@ -57,7 +56,11 @@ def read_data(filename):
     data = []
     with open(filename, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter = ',', quotechar = '|')
+        first = True
         for row in reader:
+            if (first): # skip the first line
+                first = False
+                continue
             entry = Entry(row[0], row[1], row[2], row[3], row[4])
             data.append(entry)
     return data
